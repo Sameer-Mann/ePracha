@@ -18,7 +18,7 @@ def index(request):
         d = dict(request.POST)
         d.pop('csrfmiddlewaretoken')
         d.pop('submit')
-        func(d)
+        func({key:d[key][0] for key in d})
         text = "\n".join([f"{x} {d[x][0]}" for x in d])
         print(text)
         context = dict(

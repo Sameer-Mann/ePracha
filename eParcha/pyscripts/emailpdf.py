@@ -125,5 +125,6 @@ def func(data):
     context = {"email" :  data['email'],
             "name"  : data['name'],
             "pdfname" : 'report.pdf'
+            
           }
     email_using_django(context)
