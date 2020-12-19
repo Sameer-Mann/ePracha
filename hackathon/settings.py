@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'eParcha',
     'users',
     'django.contrib.sites',
+    'qr_code',
 ]
 SITE_ID = 1
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None

@@ -4,30 +4,28 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login, logout
 # from django.db.models import Q
 from django.utils.datastructures import MultiValueDictKeyError
+from .pyscripts.emailpdf import *
 # from django.contrib import messages
 from users.models import User
-from .pyscripts.emailpdf import *
+from qr_code.qrcode.utils import QRCodeOptions
 
 def index(request):
 
     if request.method == "GET":
-        return render(request,"index.html")
+        return render(request,"index.html",{"mcin":request.user.mcin})
 
     if request.method == "POST":
-        # query = str(request.POST['book_name']).lower()
-        # try:
-        #     data = books.objects.filter(Q(name__contains=query) | Q(author_name__contains=query) | Q(subject__contains=query)).values('name','author_name','price').all()
-        # except MultiValueDictKeyError:
-        #     data = ""
-        #     pass
-        # context = {"books":data}
-        # return render(request,"index.html",context)
-
-        print(request.POST)
-        data = dict((k, request.POST[k]) for k in ['name', 'age', 'email', 'disease', 'medicine', 'docComments' ] if k in request.POST) 
-        func(data)
-        return render(request,"index.html")
-    
+        d = dict(request.POST)
+        d.pop('csrfmiddlewaretoken')
+        d.pop('submit')
+        func(d)
+        text = "\n".join([f"{x} {d[x][0]}" for x in d])
+        print(text)
+        context = dict(
+            my_options=QRCodeOptions(size='L', border=6, error_correction='L'),
+            text=text
+        )
+        return render(request,"qr_code.html",context=context)
 
 def login_user(request):
 
