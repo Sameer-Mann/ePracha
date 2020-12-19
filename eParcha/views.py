@@ -6,13 +6,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.utils.datastructures import MultiValueDictKeyError
 # from django.contrib import messages
 from users.models import User
+from .pyscripts.emailpdf import *
 
 def index(request):
 
     if request.method == "GET":
         return render(request,"index.html")
 
-    elif request.method == "POST":
+    if request.method == "POST":
         # query = str(request.POST['book_name']).lower()
         # try:
         #     data = books.objects.filter(Q(name__contains=query) | Q(author_name__contains=query) | Q(subject__contains=query)).values('name','author_name','price').all()
@@ -21,10 +22,12 @@ def index(request):
         #     pass
         # context = {"books":data}
         # return render(request,"index.html",context)
+
         print(request.POST)
+        data = dict((k, request.POST[k]) for k in ['name', 'age', 'email', 'disease', 'medicine', 'docComments' ] if k in request.POST) 
+        func(data)
         return render(request,"index.html")
-    else:
-        return redirect('index')
+    
 
 def login_user(request):
 

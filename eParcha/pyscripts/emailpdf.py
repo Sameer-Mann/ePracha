@@ -1,3 +1,29 @@
+from fpdf import FPDF
+import PyPDF2
+
+from django.conf import settings 
+from django.core.mail import send_mail 
+from django.core.mail import EmailMessage
+from django.http import FileResponse, Http404
+
+def email_using_django(context):
+    subject = 'Medical Report'
+    message = 'Hi, This is your medical report.'
+    files = [context["pdfname"]]
+    mail = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [context['email']])
+    for file in files:
+        with open(file, 'rb') as f:
+            file_data = f.read()
+            file_name = f.name
+        mail.attach(file_name, file_data, 'application/pdf')
+        # msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename = file_name)
+    # message.attach('design.png', img_data, 'image/png')
+    # email_from = settings.EMAIL_HOST_USER 
+    # recipient_list = [context['email'], ] 
+    # send_mail( subject, message, email_from, recipient_list ) 
+    mail.send()
+
+
 def Ee_mail_karo(context):
     #context = { "email" :  
     #            "name"  :
@@ -32,11 +58,6 @@ def Ee_mail_karo(context):
         smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         smtp.send_message(msg)
 
-
-
-from fpdf import FPDF
-import PyPDF2
-
 class PDF(FPDF):
     def header(self): 
         self.line(10,10,200,10)
@@ -44,7 +65,7 @@ class PDF(FPDF):
         self.line(10,10,10,280)
         self.line(10,280,200,280)    
         # Logo
-        self.image('logo.png', 10, 8, 33)
+        # self.image('logo.png', 10, 8, 33)
         # Arial bold 15
         self.set_font('Arial', 'B', 20)
         # Move to the right
@@ -71,14 +92,14 @@ def body(list):
     pdf.set_font('Times', '', 12)
     pdf.cell(0, 10, '', 0, 1)
     pdf.cell(0, 10, '', 0, 1)
-    pdf.cell(0, 10, 'Patient:  '+list[0],1,1)
-    pdf.cell(0, 10, 'Age:  '+list[1],1,1)
-    pdf.cell(0, 10, 'Gender:  '+list[2],1,1)
-    pdf.cell(0, 10, 'Diagnosis:  '+list[3],1,1)
-    pdf.cell(0, 10, "Prognosis:  "+list[4],1,1)
-    pdf.cell(0, 10, "Medicine:  "+list[5],1,1)
-    pdf.cell(0, 10, "Comments:  "+list[6],1,1)
-    pdf.cell(0, 10, "E-Mail ID:  "+list[7],1,1)
+    pdf.cell(0, 10, 'Patient:  '+list['name'],1,1)
+    pdf.cell(0, 10, 'Age:  '+list['age'],1,1)
+    # pdf.cell(0, 10, 'Gender:  '+list[2],1,1)
+    pdf.cell(0, 10, 'Diagnosis:  '+list['disease'],1,1)
+    # pdf.cell(0, 10, "Prognosis:  "+list[4],1,1)
+    pdf.cell(0, 10, "Medicine:  "+list['medicine'],1,1)
+    # pdf.cell(0, 10, "Comments:  "+list[docComments],1,1)
+    pdf.cell(0, 10, "E-Mail ID:  "+list['email'],1,1)
     
     pdf.output('test.pdf','F')
     import PyPDF2
@@ -90,19 +111,19 @@ def body(list):
     for pageNum in range(pdfReader.numPages):
         pdfWriter.addPage(pdfReader.getPage(pageNum))
     
-    pdfWriter.encrypt(list[0][:3]+list[1])
+    # pdfWriter.encrypt(list[0][:3]+list[1])
     
-    resultPdf = open('encrypted_output.pdf', 'wb')
+    resultPdf = open('report.pdf', 'wb')
     
     pdfWriter.write(resultPdf)
     resultPdf.close()
 
 
-pres = ['Amogh','69','Male','coughing','CORONA','Bat Soup','RIP','719.sn33@gmail.com']
 
-body(pres)
-context = {"email" :  pres[7],
-            "name"  : pres[0],
-            "pdfname" : 'encrypted_output.pdf'
+def func(data):
+    body(data)
+    context = {"email" :  data['email'],
+            "name"  : data['name'],
+            "pdfname" : 'report.pdf'
           }
-Ee_mail_karo(context)
+    email_using_django(context)
