@@ -8,17 +8,30 @@
     <title>Sign Up</title>
     <!-- Font Icon -->
     <link rel="stylesheet" href="{% static 'eParcha/register/fonts/material-icon/css/material-design-iconic-font.min.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <!-- Main css -->
     <link rel="stylesheet" href="{% static 'eParcha/register/css/style.css' %}">
 </head>
-<body>
-    <div class="main">
+<body  style = "padding-top: 0px; " >
+    <nav class="navbar navbar-light bg-light" style = "padding-top: 0px; " >
+    <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Hello, {{name}}</span>
+        <a href="{% url 'logout' %}">
+            <span class="navbar-text">
+                Logout
+            </span>
+        </a>
+    </div>
+    
+    
+    </nav>
+    <div class="main" style = "padding-top: 100px; " >
         <section class="patient">
             <!-- <img src="images/signup-bg.jpg" alt=""> -->
             <div class="container">
                 <div class="patient-content">
-                    <form method="POST" id="patient-form" class="patient-form" action="/">
+                    <form method="POST" id="patient-form" class="patient-form" action="/index/">
                         {% csrf_token %}
                         <h2 class="form-title">Patient Details</h2>
                         <div class="buttonInside">

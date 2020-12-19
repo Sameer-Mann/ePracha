@@ -9,23 +9,32 @@ from .pyscripts.emailpdf import *
 from users.models import User
 from qr_code.qrcode.utils import QRCodeOptions
 
+
+def home(request):
+    return render(request, "home.html")
+
 def index(request):
 
-    if request.method == "GET":
-        return render(request,"index.html",{"mcin":request.user.mcin})
+    if request.user.is_authenticated :
+        if request.method == "GET":
+            return render(request,"index.html",{"name": request.user.name, "mcin":request.user.mcin})
 
-    if request.method == "POST":
-        d = dict(request.POST)
-        d.pop('csrfmiddlewaretoken')
-        d.pop('submit')
-        func({key:d[key][0] for key in d})
-        text = "\n".join([f"{x} {d[x][0]}" for x in d])
-        print(text)
-        context = dict(
-            my_options=QRCodeOptions(size='L', border=6, error_correction='L'),
-            text=text
-        )
-        return render(request,"qr_code.html",context=context)
+        if request.method == "POST":
+            d = dict(request.POST)
+            d.pop('csrfmiddlewaretoken')
+            d.pop('submit')
+            func({key:d[key][0] for key in d})
+            text = "\n".join([f"{x} {d[x][0]}" for x in d])
+            print(text)
+            context = dict(
+                my_options=QRCodeOptions(size='L', border=6, error_correction='L'),
+                text=text
+            )
+            return render(request,"qr_code.html",context=context)
+
+    return redirect('home')
+
+    
 
 def login_user(request):
 
@@ -46,7 +55,7 @@ def login_user(request):
         else:
             return redirect('login')
 
-        return redirect('index')
+        return redirect('home')
 
 def register(request):
 
@@ -71,8 +80,8 @@ def register(request):
         else:
             return redirect('register')
 
-        return redirect('index')
+        return redirect('home')
 
 def logout_user(request):
     logout(request)
-    return redirect('index')
+    return redirect('home')
