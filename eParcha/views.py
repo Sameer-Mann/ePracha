@@ -7,29 +7,24 @@ from django.utils.datastructures import MultiValueDictKeyError
 # from django.contrib import messages
 from users.models import User
 
-# Create your views here.
-# def index(request):
+def index(request):
 
-#     if request.method == "GET":
-#         try:
-#             data = list(books.objects.filter(is_sold = False))
-#         except MultiValueDictKeyError:
-#             data = ""
-#             pass
-#         context = {"books":data}
-#         return render(request,"index.html",context)
+    if request.method == "GET":
+        return render(request,"index.html")
 
-#     if request.method == "POST":
-#         query = str(request.POST['book_name']).lower()
-#         try:
-#             data = books.objects.filter(Q(name__contains=query) | Q(author_name__contains=query) | Q(subject__contains=query)).values('name','author_name','price').all()
-#         except MultiValueDictKeyError:
-#             data = ""
-#             pass
-#         context = {"books":data}
-#         return render(request,"index.html",context)
-#     else:
-#         return redirect('index')
+    elif request.method == "POST":
+        # query = str(request.POST['book_name']).lower()
+        # try:
+        #     data = books.objects.filter(Q(name__contains=query) | Q(author_name__contains=query) | Q(subject__contains=query)).values('name','author_name','price').all()
+        # except MultiValueDictKeyError:
+        #     data = ""
+        #     pass
+        # context = {"books":data}
+        # return render(request,"index.html",context)
+        print(request.POST)
+        return render(request,"index.html")
+    else:
+        return redirect('index')
 
 def login_user(request):
 
